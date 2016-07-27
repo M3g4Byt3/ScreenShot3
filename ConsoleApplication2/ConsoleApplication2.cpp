@@ -6,9 +6,10 @@
 int _tmain(int argc, _TCHAR* argv[])
 {
 	ScreenShots *ss = new ScreenShots;
+	ss->strFilePath = ".\\";
 	while(1){
 		ss->GetDesktopRect();
-		Sleep(1000);
+		Sleep(5000);
 	}
 
 	return 0;

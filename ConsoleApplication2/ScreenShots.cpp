@@ -104,7 +104,8 @@ bool ScreenShots::GetDesktopRect(void)
 	
 	*/
 
-	CString pngFilePath,bmpFilePath,strFilePath = ".\\";
+	CString pngFilePath,bmpFilePath;
+	//strFilePath = ".\\";
 	strFilePath += GetTimeNow();
 
 	pngFilePath += strFilePath;
@@ -118,15 +119,15 @@ bool ScreenShots::GetDesktopRect(void)
 	//strtest.GetBuffer(strtest.GetLength());
 
 	if(!CScreenShot(hSrcDC,rc,pBmp))
-		return false;
-	BMptoPNG(bmpFilePath,pngFilePath);
+		return FALSE;
+	BMPToPNG(bmpFilePath,pngFilePath);
 	DeleteFile(bmpFilePath);
-	return true;
+	return TRUE;
 }
 
 
 
-BOOL ScreenShots::BMptoPNG(LPCWSTR StrBMp,LPCWSTR StrPNG)
+BOOL ScreenShots::BMPToPNG(LPCWSTR StrBMp,LPCWSTR StrPNG)
 {
 	CLSID encoderClsid;
 	Status stat;
@@ -134,13 +135,11 @@ BOOL ScreenShots::BMptoPNG(LPCWSTR StrBMp,LPCWSTR StrPNG)
 	image = Bitmap::FromFile(StrBMp,TRUE);
 	if (!GetEncoderClsid(L"image/png",&encoderClsid))
 	{
-		//printf("error1");
 		return FALSE;
 	}
 	stat = image->Save(StrPNG,&encoderClsid,NULL);
 	if (stat != Ok)
 	{
-		//printf("error2");
 		return FALSE;
 	}
 	delete image;
@@ -160,7 +159,6 @@ BOOL ScreenShots::GetEncoderClsid(WCHAR* pFormat,CLSID* pClsid)
 	pImageCodecInfo = (ImageCodecInfo*)(malloc(size));
 	if (pImageCodecInfo == NULL)
 	{
-		//printf("error3");
 		return FALSE;
 	}
 	GetImageEncoders(num,size,pImageCodecInfo);
@@ -177,15 +175,12 @@ BOOL ScreenShots::GetEncoderClsid(WCHAR* pFormat,CLSID* pClsid)
 	return bfound;
 }
 
+
 CString ScreenShots::GetTimeNow(void)
 {
 	CString m_date;
 	SYSTEMTIME time;
 	GetLocalTime(&time);
-	m_date.Format(_T("%2d.%2d.%2d"),time.wHour,time.wMinute,time.wSecond);
-	
-	//m_date.Format(TEXT("%2d"),time.wSecond);
-	m_date.ReleaseBuffer();
-	
+	m_date.Format(_T("%2d.%2d.%2d.%2d.%2d"),time.wMonth,time.wDay,time.wHour,time.wMinute,time.wSecond);
 	return m_date.GetString();
 }
