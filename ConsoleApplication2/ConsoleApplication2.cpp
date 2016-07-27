@@ -5,8 +5,7 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	ScreenShots *ss = new ScreenShots;
-	ss->strFilePath = ".\\";
+	ScreenShots *ss = new ScreenShots(".\\sn\\");//构造函数传入文件保存路径
 	while(1){
 		ss->GetDesktopRect();
 		Sleep(5000);

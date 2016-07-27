@@ -3,7 +3,13 @@
 
 ScreenShots::ScreenShots(void)
 {
+}
+
+ScreenShots::ScreenShots(CString saveFilePath)
+{
 	GdiplusStartup(&m_pGdiToken,&m_gdiplusStartupInput,NULL);
+	CreateDirectory((LPCTSTR)saveFilePath,NULL);//创建sn文件夹
+	strFilePath = saveFilePath;
 }
 
 
@@ -84,10 +90,7 @@ bool ScreenShots::GetDesktopRect(void)
 	RECT rc;
 	HDC hSrcDC;
 	//TCHAR bmpFilePath[20] = TEXT(".\\123.bmp"); //字符集真尼玛操心
-	//TCHAR pngFilePath[20] = TEXT(".\\123.png");
 	HWND hwnd = GetDesktopWindow();
-	//SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);  
-	//GetClientRect(hwnd,&rect);
 	hSrcDC = GetDC(hwnd);
 
 	rc.left = 0; 
@@ -96,6 +99,10 @@ bool ScreenShots::GetDesktopRect(void)
 	rc.bottom = GetSystemMetrics (SM_CYSCREEN);
 
 	/*
+
+	SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);  
+	GetClientRect(hwnd,&rc);
+
 	printf("t:%d,",rc.top);
 	printf("l:%d --- ",rc.left);
 	printf("r:%d\n",rc.right);
@@ -104,19 +111,14 @@ bool ScreenShots::GetDesktopRect(void)
 	
 	*/
 
-	CString pngFilePath,bmpFilePath;
-	//strFilePath = ".\\";
-	strFilePath += GetTimeNow();
-
-	pngFilePath += strFilePath;
-	pngFilePath += _T(".PNG");
-
-	bmpFilePath += strFilePath;
-	bmpFilePath += _T(".BMP");
+	CString pngFilePath,bmpFilePath,tmpFilePath;
+	//strFilePath = ".\\"; default path
+	tmpFilePath = strFilePath + GetTimeNow();
+	pngFilePath = tmpFilePath +  _T(".PNG");
+	bmpFilePath = tmpFilePath +  _T(".BMP");
 
 	TCHAR *pBmp = (TCHAR *)bmpFilePath.GetBuffer();
 	bmpFilePath.ReleaseBuffer();
-	//strtest.GetBuffer(strtest.GetLength());
 
 	if(!CScreenShot(hSrcDC,rc,pBmp))
 		return FALSE;
@@ -178,7 +180,7 @@ BOOL ScreenShots::GetEncoderClsid(WCHAR* pFormat,CLSID* pClsid)
 
 CString ScreenShots::GetTimeNow(void)
 {
-	CString m_date;
+	CString m_date = "";
 	SYSTEMTIME time;
 	GetLocalTime(&time);
 	m_date.Format(_T("%2d.%2d.%2d.%2d.%2d"),time.wMonth,time.wDay,time.wHour,time.wMinute,time.wSecond);

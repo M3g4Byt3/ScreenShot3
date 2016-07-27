@@ -9,8 +9,9 @@ class ScreenShots
 {
 public:
 	ScreenShots(void);
+	ScreenShots::ScreenShots(CString saveFilePath);//重载构造函数，传入文件路径
 	~ScreenShots(void);
-	CString	strFilePath;//文件路径
+	CString strFilePath;//文件路径
 	bool CScreenShot(HDC hSrcDC, RECT rect,PTCHAR szFileName);//桌面截屏
 	bool GetDesktopRect(void); //获取桌面RECT
 	BOOL GetEncoderClsid(WCHAR* pFormat,CLSID* pClsid);//获取文件编码方式
