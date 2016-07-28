@@ -105,7 +105,6 @@ bool ScreenShots::CScreenShot(HDC hSrcDC, RECT rect,PTCHAR szFileName)
 
 	bmp.bmBitsPixel = 16;//16bpp
 
-	/*
 	// Convert the color format to a count of bits. 
 	cClrBits = (WORD)(bmp.bmPlanes * bmp.bmBitsPixel);
 	if (cClrBits == 1) 
@@ -120,9 +119,6 @@ bool ScreenShots::CScreenShot(HDC hSrcDC, RECT rect,PTCHAR szFileName)
 		cClrBits = 24; 
 	else 
 		cClrBits = 32;
-	
-	默认都不计算调色板
-	*/
 
 	hBitmap = (HBITMAP)SelectObject(hMemDC, hOldBitmap);//选出
 
@@ -150,7 +146,7 @@ bool ScreenShots::CScreenShot(HDC hSrcDC, RECT rect,PTCHAR szFileName)
 	bmInfo = (PBITMAPINFO) LocalAlloc(LPTR, sizeof(BITMAPINFOHEADER));//调色板好像没有计算
 
 	// Locks a local memory object and returns a pointer to the first byte of the object's memory block.
-	if(!bmInfo){
+	if(bmInfo != NULL){
 		LocalLock(bmInfo);
 	}
 
@@ -185,7 +181,7 @@ bool ScreenShots::CScreenShot(HDC hSrcDC, RECT rect,PTCHAR szFileName)
 	LocalUnlock(bmInfo);//解锁bmInfo内存
 	LocalFree(bmInfo); //释放LocalAlloc pbmi
 	HeapFree(GetProcessHeap(), HEAP_NO_SERIALIZE, lpvpxldata);
-	ReleaseDC(GetDesktopWindow(), hSrcDC);
+	ReleaseDC(hWnd, hSrcDC);
 	DeleteDC(hMemDC);
 	DeleteObject(hBitmap);
 	return TRUE;
@@ -198,9 +194,8 @@ bool ScreenShots::GetDesktopRect(void)
 {
 	RECT rc;
 	HDC hSrcDC;
-	//TCHAR bmpFilePath[20] = TEXT(".\\123.bmp"); //字符集真尼玛操心
-	HWND hwnd = GetDesktopWindow();
-	hSrcDC = GetDC(hwnd);
+	hWnd = GetDesktopWindow();
+	hSrcDC = GetDC(hWnd);
 
 	rc.left = 0; 
 	rc.top = 0; 
@@ -231,7 +226,7 @@ bool ScreenShots::GetDesktopRect(void)
 
 	if(!CScreenShot(hSrcDC,rc,pBmp))
 		return FALSE;
-	BMPToPNG(bmpFilePath,pngFilePath);
+	//BMPToPNG(bmpFilePath,pngFilePath);
 	//DeleteFile(bmpFilePath);
 	return TRUE;
 }
